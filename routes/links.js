@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const Link = require("../models/Links");
 
+const BASE_URL = "https://shortherurl-production.up.railway.app/api/links";
+
 router.post("/shorten", async (req, res) => {
   const { url } = req.body;
   if (!url) {
@@ -11,17 +13,13 @@ router.post("/shorten", async (req, res) => {
   try {
     let link = await Link.findOne({ originalUrl: url });
     if (link) {
-      return res
-        .status(200)
-        .json({ shortUrl: `http://localhost:3000/api/links/${link.shortId}` });
+      return res.status(200).json({ shortUrl: `${BASE_URL}/${link.shortId}` });
     }
 
     link = new Link({ originalUrl: url });
     await link.save();
 
-    return res
-      .status(201)
-      .json({ shortUrl: `http://localhost:3000/api/links/${link.shortId}` });
+    return res.status(201).json({ shortUrl: `${BASE_URL}/${link.shortId}` });
   } catch (err) {
     return res.status(500).json({ message: "Erro ao salvar o link" });
   }
