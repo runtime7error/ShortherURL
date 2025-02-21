@@ -1,22 +1,19 @@
+require("dotenv").config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const app = express();
-const port = 3000;
-require("dotenv").config();
 
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+const app = express();
+const port = process.env.PORT || 3000;
+
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB conectado!"))
   .catch((err) => console.error("Erro ao conectar ao MongoDB:", err));
 
-//   mongodb+srv://luquers223:bPVpf2NWq3L9lmcL@maincluster.fcmnq.mongodb.net/?retryWrites=true&w=majority&appName=MainCluster
-
-app.use(express.json(), cors());
+app.use(express.json());
+app.use(cors());
 
 const linksRouter = require('./routes/links');
 app.use('/api/links', linksRouter);
 
-const PORT = process.env.PORT || 3000;
-app.listen(port, () => {
-    app.listen(PORT, () => console.log(`API rodando na porta ${PORT}`));
-});
+app.listen(port, () => console.log(`API rodando na porta ${port}`));
